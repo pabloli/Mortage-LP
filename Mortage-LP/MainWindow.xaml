@@ -8,14 +8,21 @@
         Title="MainWindow" Height="495.283" Width="525">
     <Grid>
         <Label x:Name="label" Content="Property Value" HorizontalAlignment="Left" Margin="125,45,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="227,48,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <ListView x:Name="listView" HorizontalAlignment="Left" Height="100" Margin="125,94,0,0" VerticalAlignment="Top" Width="222">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <TextBox x:Name="Value" HorizontalAlignment="Left" Height="23" Margin="227,48,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="128,151,0,0" VerticalAlignment="Top" Height="101" Width="222" CanUserResizeColumns="False" CanUserResizeRows="False" CanUserSortColumns="False" RowDetailsVisibilityMode="Visible">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="Name" Header="Name" IsReadOnly="False" Binding="{Binding Path=Name}">
+                </DataGridTextColumn>
+                <DataGridTextColumn x:Name="MaxPercent" Header="Maximum %" IsReadOnly="False" Binding="{Binding Path=MaxValue}"/>
+                <DataGridTextColumn x:Name="Interest" Header="Interest" IsReadOnly="False" Binding="{Binding Path=Interest}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button x:Name="button" Content="Calculate" HorizontalAlignment="Left" Margin="194,275,0,0" VerticalAlignment="Top" Width="105" Click="button_Click"/>
+        <Image x:Name="image" HorizontalAlignment="Left" Height="19" Margin="381,107,0,0" VerticalAlignment="Top" Width="18"/>
+        <Image x:Name="Image1_png" Margin="381,107,118,334" Source="Image1.png" Stretch="Fill" MouseLeftButtonUp="Image1_png_MouseLeftButtonUp" />
+        <TextBox x:Name="NameTB" HorizontalAlignment="Left" Height="23" Margin="128,107,0,0" TextWrapping="Wrap" Text="Name" VerticalAlignment="Top" Width="59"/>
+        <TextBox x:Name="MaxTB" HorizontalAlignment="Left" Height="23" Margin="210,107,0,0" TextWrapping="NoWrap" Text="Max Percent" VerticalAlignment="Top" Width="59"/>
+        <TextBox x:Name="InterestTB" HorizontalAlignment="Left" Height="23" Margin="300,107,0,0" TextWrapping="Wrap" Text="Interest" VerticalAlignment="Top" Width="59"/>
 
     </Grid>
 </Window>
