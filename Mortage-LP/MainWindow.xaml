@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mortage_LP"
         mc:Ignorable="d"
-        Title="MainWindow" Height="495.283" Width="525">
+        Title="MainWindow" Height="526.283" Width="525">
     <Grid Margin="0,0,0,-21">
         <Label x:Name="label" Content="Property Value" HorizontalAlignment="Left" Margin="55,53,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="Value" Text="1000000" HorizontalAlignment="Left" Height="23" Margin="166,56,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
@@ -17,18 +17,15 @@
                 <DataGridTextColumn x:Name="Interest" Header="Interest" IsReadOnly="False" Binding="{Binding Path=Interest}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <DataGrid x:Name="dataGridContrains" HorizontalAlignment="Left" Margin="55,325,0,0" VerticalAlignment="Top" Height="101" Width="210" CanUserResizeColumns="False" CanUserResizeRows="False" CanUserSortColumns="False" RowDetailsVisibilityMode="Visible">
-            <DataGrid.Columns>
-            </DataGrid.Columns>
-        </DataGrid>
         <Button x:Name="button" Content="Calculate" HorizontalAlignment="Left" Margin="91,444,0,0" VerticalAlignment="Top" Width="105" Click="button_Click"/>
         <Image x:Name="image" HorizontalAlignment="Left" Height="19" Margin="308,118,0,0" VerticalAlignment="Top" Width="18"/>
-        <Image x:Name="AddLineBtn" Margin="308,118,191,323" Source="Image1.png" MouseLeftButtonUp="Image1_png_MouseLeftButtonUp" />
-        <Image x:Name="AddCntBtn" Margin="308,265,191,176" Source="Image1.png" MouseLeftButtonUp="AddCntBtn_MouseLeftButtonUp" />
+        <Image x:Name="AddLineBtn" Margin="291,119,208,375" Source="Image1.png" MouseLeftButtonUp="Image1_png_MouseLeftButtonUp" RenderTransformOrigin="0.333,1.818" />
+        <Image x:Name="AddCntBtn" Margin="270,277,229,214" Source="Image1.png" MouseLeftButtonUp="AddCntBtn_MouseLeftButtonUp" RenderTransformOrigin="3.389,0.98" />
         <TextBox x:Name="NameTB" HorizontalAlignment="Left" Height="23" Margin="55,118,0,0" TextWrapping="Wrap" Text="X1" VerticalAlignment="Top" Width="59"/>
         <TextBox x:Name="MaxTB" HorizontalAlignment="Left" Height="23" Margin="137,118,0,0" TextWrapping="NoWrap" Text="50" VerticalAlignment="Top" Width="59"/>
         <TextBox x:Name="InterestTB" HorizontalAlignment="Left" Height="23" Margin="227,118,0,0" TextWrapping="Wrap" Text="0.018" VerticalAlignment="Top" Width="59"/>
-        <TextBox x:Name="ContrainTB" HorizontalAlignment="Left" Height="23" Margin="55,277,0,0" TextWrapping="Wrap" Text="Contrain" VerticalAlignment="Top" Width="231"/>
+        <TextBox x:Name="ContrainTB" HorizontalAlignment="Left" Height="23" Margin="55,277,0,0" TextWrapping="Wrap" Text="Contrain" VerticalAlignment="Top" Width="210"/>
+        <TextBox x:Name="ResultTB" HorizontalAlignment="Left" Height="143" Margin="291,321,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="216"/>
 
     </Grid>
 </Window>

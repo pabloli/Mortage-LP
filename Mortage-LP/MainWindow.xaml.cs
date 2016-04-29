@@ -1,4 +1,5 @@
-﻿using Microsoft.SolverFoundation.Solvers;
+﻿using Microsoft.SolverFoundation.Services;
+using Microsoft.SolverFoundation.Solvers;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -14,6 +15,14 @@ namespace Mortage_LP
         public MainWindow()
         {
             InitializeComponent();
+            var data = new Invester { Line = 0, Name = "Bank", MaxValue = "100", Interest = "0.15" };
+            if (!dataGridVars.Items.Contains(data))
+                dataGridVars.Items.Add(data);
+            data = new Invester { Line = 1, Name = "Gov", MaxValue = "90", Interest = "0.08" };
+            if (!dataGridVars.Items.Contains(data))
+                dataGridVars.Items.Add(data);
+            ContrainTB.Text = "2L0 - L1 >= 0";
+
         }
         String TargetFormula;
         List<String> listOfStringContrains = new List<string>();
@@ -29,21 +38,32 @@ namespace Mortage_LP
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            TargetFormula = "MIN Z="; 
+            SolverContext context = SolverContext.GetContext();
+            Model model = context.CreateModel();
+            List<Decision> decisions = new List<Decision>();
+
+            var formula = "";
+            string con = "";
             foreach (var item in dataGridVars.Items)
             {
-                double min = Double.Parse((item as Invester).MaxValue) * Double.Parse(Value.Text);
-                String contrain = "L" + (item as Invester).Line + " <= " + min;
-                ParseContrain(contrain);
+                string li = "L" + (item as Invester).Line;
+                double maxValue = Double.Parse((item as Invester).MaxValue) * Double.Parse(Value.Text);
+                String contrain = li + " <= " + maxValue;
+                con += " " + li + " +"; 
+                Decision dc = new Decision(Domain.RealRange(0,maxValue), li);
+                decisions.Add(dc);
+                model.AddDecision(dc);
             }
+            ParseContrain(con.Substring(0, con.Length - 1) + " >= " + Value.Text);
             foreach (var item in dataGridVars.Items)
             {
-                TargetFormula += Double.Parse((item as Invester).Interest) + "* L" + (item as Invester).Line;
-                if ((item as Invester).Line <= dataGridVars.Items.Count)
-                    TargetFormula += " + ";
+                formula += " " + Double.Parse((item as Invester).Interest) + " * L" + (item as Invester).Line;
+                if ((item as Invester).Line <= dataGridVars.Items.Count - 1)
+                    formula += " +";
                 String contrain = "L" + (item as Invester).Line + " >= 0 ";
                 ParseContrain(contrain);
             }
+            TargetFormula = formula.Substring(1, formula.Length - 2);
 
             Console.WriteLine(TargetFormula);
 
@@ -57,12 +77,23 @@ namespace Mortage_LP
                     if (i == list.Capacity - 1)
                         c += " " + listOfStringContrains[ListOfContrains.IndexOf(list)] + " " + list[i];
                     else
-                        c += list[i] + "L" + i;
+                        c += Math.Abs(list[i]) + " * L" + i;
                    
                 }
+                model.AddConstraint("C" + ListOfContrains.IndexOf(list), c);
+
                 Console.WriteLine(c);
             }
-            SimplexSolver solver = new SimplexSolver();
+            model.AddGoal("Goal", GoalKind.Minimize, TargetFormula);
+            // Solve the problem
+
+            Solution solution = context.Solve(new SimplexDirective());
+            // Propogate decisions tells the context to write the solution directly to
+            // the database
+            context.PropagateDecisions();
+            // Display the results
+            Report report = solution.GetReport();
+            ResultTB.Text = report.ToString();
         }
 
         private void AddCntBtn_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
