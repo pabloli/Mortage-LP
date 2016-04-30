@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using System.Linq;
 
 namespace Mortage_LP
 {
@@ -12,23 +13,15 @@ namespace Mortage_LP
     /// </summary>
     public partial class MainWindow : Window
     {
+        SolverContext context;
         public MainWindow()
         {
             InitializeComponent();
-            var data = new Invester { Line = 0, Name = "Bank", MaxValue = "100", Interest = "0.15" };
-            if (!dataGridVars.Items.Contains(data))
-                dataGridVars.Items.Add(data);
-            data = new Invester { Line = 1, Name = "Gov", MaxValue = "90", Interest = "0.08" };
-            if (!dataGridVars.Items.Contains(data))
-                dataGridVars.Items.Add(data);
-            ContrainTB.Text = "2L0 - L1 >= 0";
-
+            context = SolverContext.GetContext();
         }
         String TargetFormula;
         List<String> listOfStringContrains = new List<string>();
-        List<Double> listOfMinimums = new List<double>();
         List<List<double>> ListOfContrains = new List<List<double>>();
-        List<String> ListOfTypeContrains = new List<String>();
         private void Image1_png_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var data = new Invester { Line = dataGridVars.Items.Count , Name = NameTB.Text, MaxValue = MaxTB.Text, Interest = InterestTB.Text };
@@ -38,8 +31,9 @@ namespace Mortage_LP
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            SolverContext context = SolverContext.GetContext();
+            context.ClearModel();
             Model model = context.CreateModel();
+
             List<Decision> decisions = new List<Decision>();
 
             var formula = "";
@@ -47,8 +41,9 @@ namespace Mortage_LP
             foreach (var item in dataGridVars.Items)
             {
                 string li = "L" + (item as Invester).Line;
-                double maxValue = Double.Parse((item as Invester).MaxValue) * Double.Parse(Value.Text);
+                double maxValue = Double.Parse((item as Invester).MaxValue) * Double.Parse(Value.Text) /100f;
                 String contrain = li + " <= " + maxValue;
+                ParseContrain(contrain);
                 con += " " + li + " +"; 
                 Decision dc = new Decision(Domain.RealRange(0,maxValue), li);
                 decisions.Add(dc);
@@ -65,7 +60,7 @@ namespace Mortage_LP
             }
             TargetFormula = formula.Substring(1, formula.Length - 2);
 
-            Console.WriteLine(TargetFormula);
+            FormulaTB.Text = TargetFormula;
 
             foreach (var list in ListOfContrains)
             {
@@ -85,15 +80,24 @@ namespace Mortage_LP
                 Console.WriteLine(c);
             }
             model.AddGoal("Goal", GoalKind.Minimize, TargetFormula);
-            // Solve the problem
-
-            Solution solution = context.Solve(new SimplexDirective());
-            // Propogate decisions tells the context to write the solution directly to
-            // the database
+            var directive = new SimplexDirective()
+            {
+                IterationLimit = -1,
+                TimeLimit = -1,
+                Arithmetic = Arithmetic.Exact,
+                GetSensitivity = true
+            };
+            Solution solution = context.Solve(directive);
             context.PropagateDecisions();
-            // Display the results
-            Report report = solution.GetReport();
-            ResultTB.Text = report.ToString();
+            for (int i = 0; i < decisions.Count; i++)
+            {
+                var old = (dataGridVars.Items[i] as Invester);
+                old.SelectedValue = decisions[i].ToDouble().ToString();
+                dataGridVars.Items[i] = old;
+            }
+            dataGridVars.Items.Refresh();
+            dataGridVars.UpdateLayout();
+            Console.WriteLine(solution.GetReport().ToString());
         }
 
         private void AddCntBtn_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -114,51 +118,123 @@ namespace Mortage_LP
             text.Replace("+", " + ");
             text.Replace("-", " - ");
             text.Replace("<=", " <= ");
-            text.Replace("<=", " >= ");
+            text.Replace(">=", " >= ");
             var line = text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < line.Length; i++)
+            try
             {
-                double mult = 1;
-                var pos = -1;
-                int index = -1;
-                switch (line[i])
+
+
+
+                for (int i = 0; i < line.Length; i++)
                 {
-                    case "-":
-                        pos = line[i + 1].IndexOf("L", StringComparison.CurrentCultureIgnoreCase);
-                        index = int.Parse(line[i + 1].Substring(pos + 1));
-                        if (pos != 0)
-                            mult *= double.Parse(line[i + 1].Substring(0, pos));
-                        contrains[index] = -mult;
-                        i++;
-                        break;
-                    case "+":
-                        pos = line[i + 1].IndexOf("L", StringComparison.CurrentCultureIgnoreCase);
-                        index = int.Parse(line[i + 1].Substring(pos + 1));
-                        if (pos != 0)
-                            mult *= double.Parse(line[i + 1].Substring(0, pos));
-                        contrains[index] = mult;
-                        i++;
-                        break;
-                    case "<=":
-                        contrains[resVar] = double.Parse(line[i + 1]);
-                        listOfStringContrains.Add("<=");
-                        i++;
-                        break;
-                    case ">=":
-                        contrains[resVar] = double.Parse(line[i + 1]);
-                        listOfStringContrains.Add(">=");
-                        i++;
-                        break;
-                    default:
-                        pos = line[i].IndexOf("L", StringComparison.CurrentCultureIgnoreCase);
-                        index = int.Parse(line[i].Substring(pos + 1));
-                        if (pos != 0)
-                            mult *= double.Parse(line[i].Substring(0, pos));
-                        contrains[index] = mult;
-                        break;
+                    double mult = 1;
+                    var pos = -1;
+                    int index = -1;
+                    switch (line[i])
+                    {
+                        case "-":
+                            pos = line[i + 1].IndexOf("L", StringComparison.CurrentCultureIgnoreCase);
+                            index = int.Parse(line[i + 1].Substring(pos + 1));
+                            if (pos != 0)
+                                mult *= double.Parse(line[i + 1].Substring(0, pos));
+                            contrains[index] = -mult;
+                            i++;
+                            break;
+                        case "+":
+                            pos = line[i + 1].IndexOf("L", StringComparison.CurrentCultureIgnoreCase);
+                            index = int.Parse(line[i + 1].Substring(pos + 1));
+                            if (pos != 0)
+                                mult *= double.Parse(line[i + 1].Substring(0, pos));
+                            contrains[index] = mult;
+                            i++;
+                            break;
+                        case "<=":
+                            contrains[resVar] = double.Parse(line[i + 1]);
+                            listOfStringContrains.Add("<=");
+                            i++;
+                            break;
+                        case ">=":
+                            contrains[resVar] = double.Parse(line[i + 1]);
+                            listOfStringContrains.Add(">=");
+                            i++;
+                            break;
+                        default:
+                            pos = line[i].IndexOf("L", StringComparison.CurrentCultureIgnoreCase);
+                            index = int.Parse(line[i].Substring(pos + 1));
+                            if (pos != 0)
+                                mult *= double.Parse(line[i].Substring(0, pos));
+                            contrains[index] = mult;
+                            break;
+                    }
                 }
             }
+            catch (Exception)
+            {
+                ContrainTB.BorderBrush = System.Windows.Media.Brushes.Red;
+                return;
+            }
+            ContrainTB.BorderBrush = System.Windows.Media.Brushes.Gray;
+            text = "";
+            foreach (var item in line)
+            {
+                text += item;
+                if (item != line[line.Length - 1])
+                    text += " ";
+                else
+                    text += "\n";
+            }
+
+            ContrainsTB.Text += text;
             ListOfContrains.Add(contrains);
+        }
+
+        private void buttonCL_Click(object sender, RoutedEventArgs e)
+        {
+            ContrainsTB.Clear();
+            TargetFormula = "";
+            FormulaTB.Text = "";
+            dataGridVars.Items.Clear();
+            ListOfContrains.Clear();
+
+        }
+        private void Test1()
+        {
+            buttonCL_Click(null, null);
+            dataGridVars.Items.Add( new Invester { Line = 0, Name = "Bank", MaxValue = "100", Interest = "0.15", SelectedValue = "" });
+            dataGridVars.Items.Add( new Invester { Line = 1, Name = "Gov", MaxValue = "90", Interest = "0.08", SelectedValue = "" });
+            ParseContrain( "2L0 - L1 >= 0");
+        }
+
+        private void Test2()
+        {
+            buttonCL_Click(null, null);
+            dataGridVars.Items.Add(new Invester { Line = 0, Name = "BankA", MaxValue = "50", Interest = "0.15", SelectedValue = "" });
+            dataGridVars.Items.Add(new Invester { Line = 1, Name = "BankB", MaxValue = "40", Interest = "0.80", SelectedValue = "" });
+            dataGridVars.Items.Add(new Invester { Line = 2, Name = "BankC", MaxValue = "33", Interest = "0.50", SelectedValue = "" });
+            dataGridVars.Items.Add(new Invester { Line = 3, Name = "BankD", MaxValue = "20", Interest = "0.01", SelectedValue = "" });
+            dataGridVars.Items.Add(new Invester { Line = 4, Name = "BankE", MaxValue = "100", Interest = "0.9", SelectedValue = "" });
+
+            ParseContrain("L0 - L1 >= 0");
+            ParseContrain("L0 + L1 - 3L2 >= 0");
+            ParseContrain("L1 + 2L2 - L3 >= 0");
+            ParseContrain("L2 - L3 >= 0");
+        }
+
+        private void buttonTest_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = (e.Source as System.Windows.Controls.Button);
+            switch (btn.Name)
+            {
+                case "buttonTest1":
+                    Test1();
+                    break;
+                case "buttonTest2":
+                    Test2();
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
     public class Invester
@@ -167,5 +243,6 @@ namespace Mortage_LP
         public string Name{ get; set; }
         public string MaxValue{ get; set; }
         public string Interest { get; set; }
+        public string SelectedValue { get; set; }
     }
 }
