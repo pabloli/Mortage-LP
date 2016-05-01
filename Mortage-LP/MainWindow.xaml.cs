@@ -115,10 +115,10 @@ namespace Mortage_LP
             }
             resVar--;
             var text = contrain;
-            text.Replace("+", " + ");
-            text.Replace("-", " - ");
-            text.Replace("<=", " <= ");
-            text.Replace(">=", " >= ");
+            text = text.Replace("+", " + ");
+            text = text.Replace("-", " - ");
+            text = text.Replace("<=", " <= ");
+            text = text.Replace(">=", " >= ");
             var line = text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             try
             {
@@ -199,7 +199,7 @@ namespace Mortage_LP
             buttonCL_Click(null, null);
             dataGridVars.Items.Add( new Invester { Line = 0, Name = "Bank", MaxValue = "100", Interest = "0.15", SelectedValue = "" });
             dataGridVars.Items.Add( new Invester { Line = 1, Name = "Gov", MaxValue = "90", Interest = "0.08", SelectedValue = "" });
-            ParseContrain( "2L0 - L1 >= 0");
+            ParseContrain( "L0 - 2L1 >= 0");
         }
 
         private void Test2()
