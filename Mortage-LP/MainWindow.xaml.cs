@@ -122,9 +122,6 @@ namespace Mortage_LP
             var line = text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             try
             {
-
-
-
                 for (int i = 0; i < line.Length; i++)
                 {
                     double mult = 1;
@@ -235,6 +232,27 @@ namespace Mortage_LP
                 default:
                     break;
             }
+        }
+
+        private void SeeCnts_Click(object sender, RoutedEventArgs e)
+        {
+            String text ="";
+            for (int itemIndex = 0; itemIndex < ListOfContrains.Count; itemIndex++)
+            {
+                var list = ListOfContrains[itemIndex];
+                string c = "";
+                for (int i = 0; i < list.Capacity; i++)
+                {
+                    if (i != 0 && i < list.Capacity - 1)
+                        c += list[i] >= 0 ? " + " : " - ";
+                    if (i == list.Capacity - 1)
+                        c += " " + listOfStringContrains[ListOfContrains.IndexOf(list)] + " " + list[i];
+                    else
+                        c += Math.Abs(list[i]) + " * L" + i;
+                }
+                text += "Contrain " + itemIndex + ":\t" + c + "\n";
+            }
+            MessageBox.Show(text, "Contrains");
         }
     }
     public class Invester
