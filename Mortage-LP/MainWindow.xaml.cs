@@ -250,9 +250,9 @@ namespace Mortage_LP
                     else
                         c += Math.Abs(list[i]) + " * L" + i;
                 }
-                text += "Contrain " + itemIndex + ":\t" + c + "\n";
+                text += "Constrain " + itemIndex + ":\t" + c + "\n";
             }
-            MessageBox.Show(text, "Contrains");
+            MessageBox.Show(text, "Constrains");
         }
     }
     public class Invester
