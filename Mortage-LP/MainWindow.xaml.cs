@@ -227,10 +227,6 @@ namespace Mortage_LP
             dataGridVars.Items.Add(new Invester { Line = 0, Name = "Bank", MaxValue = "100", Interest = "0.15", SelectedValue = "" });
             dataGridVars.Items.Add(new Invester { Line = 1, Name = "Gov", MaxValue = "90", Interest = "0.08", SelectedValue = "" });
             dataGridVars.Items.Add(new Invester { Line = 2, Name = "Gov2", MaxValue = "50", Interest = "0.07", SelectedValue = "" });
-            ParseContrain("2L0 - L1 >= 0");
-            ParseContrain("2L0 - L1 - L2 >= 0");
-            ParseContrain("L0 + L1 + L2 <= "+Value.Text);
-            ParseContrain("L1 - L2 >= 0");
             ParseContrain("L0  >= 1000000");
             ParseContrain("L1  >= 1000000");
             ParseContrain("L2  >= 1000000");
