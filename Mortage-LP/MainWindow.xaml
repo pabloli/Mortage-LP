@@ -25,8 +25,9 @@
         </DataGrid>
         <Button x:Name="button" Content="Calculate" HorizontalAlignment="Left" Margin="422,80,0,0" VerticalAlignment="Top" Width="85" Click="button_Click" Grid.Row="1"/>
         <Button x:Name="buttonCL" Content="Clear" HorizontalAlignment="Left" Margin="422,105,0,0" VerticalAlignment="Top" Width="85" Click="buttonCL_Click" Grid.Row="1"/>
-        <Button x:Name="buttonTest1" Content="T1" HorizontalAlignment="Left" Margin="450,42,0,0" Width="37" Click="buttonTest_Click" Grid.Row="2" Height="20" VerticalAlignment="Top"/>
-        <Button x:Name="buttonTest2" Content="T2" HorizontalAlignment="Left" Margin="450,67,0,0" Width="37" Click="buttonTest_Click" Height="20" VerticalAlignment="Top" Grid.Row="2"/>
+        <Button x:Name="buttonTest1" Content="T1" HorizontalAlignment="Left" Margin="350,52,0,0" Width="37" Click="buttonTest_Click" Grid.Row="2" Height="20" VerticalAlignment="Top"/>
+        <Button x:Name="buttonTest2" Content="T2" HorizontalAlignment="Left" Margin="400,52,0,0" Width="37" Click="buttonTest_Click" Height="20" VerticalAlignment="Top" Grid.Row="2"/>
+        <Button x:Name="buttonTest3" Content="T3" HorizontalAlignment="Left" Margin="450,52,0,0" Width="37" Click="buttonTest_Click" Height="20" VerticalAlignment="Top" Grid.Row="2"/>
         <Image x:Name="image" HorizontalAlignment="Left" Height="19" Margin="308,118,0,0" VerticalAlignment="Top" Width="18"/>
         <Image x:Name="AddLineBtn" Margin="374,118,0,0" Source="Image1.png" MouseLeftButtonUp="Image1_png_MouseLeftButtonUp" RenderTransformOrigin="0.333,1.818" HorizontalAlignment="Left" Width="27" Height="29" VerticalAlignment="Top" />
         <Image x:Name="AddCntBtn" Margin="374,5,0,0" Source="Image1.png" MouseLeftButtonUp="AddCntBtn_MouseLeftButtonUp" RenderTransformOrigin="3.389,0.98" HorizontalAlignment="Left" Width="27" Height="29" VerticalAlignment="Top" Grid.Row="1" />
@@ -43,6 +44,8 @@
         <Label x:Name="label5" Content="Max Percent" HorizontalAlignment="Left" Margin="213,95,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label6" Content="Interest" HorizontalAlignment="Left" Margin="309,95,0,0" VerticalAlignment="Top"/>
         <Button x:Name="SeeCnts" Content="See Contrains" HorizontalAlignment="Left" Margin="422,130,0,0" Grid.Row="1" VerticalAlignment="Top" Width="85" Click="SeeCnts_Click"/>
+        <TextBox x:Name="Quality" HorizontalAlignment="Left" Height="23" Margin="168,49,0,0" Grid.Row="2" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="label7" Content="Result Quality" HorizontalAlignment="Left" Margin="66,45,0,0" Grid.Row="2" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

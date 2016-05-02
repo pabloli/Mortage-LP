@@ -88,7 +88,13 @@ namespace Mortage_LP
                 GetSensitivity = true
             };
             Solution solution = context.Solve(directive);
+            Quality.Text = solution.Quality.ToString();
+            Console.WriteLine(solution.GetReport().ToString());
+            if (solution.Quality != SolverQuality.Optimal)
+                return;
+
             context.PropagateDecisions();
+            
             for (int i = 0; i < decisions.Count; i++)
             {
                 var old = (dataGridVars.Items[i] as Invester);
@@ -97,7 +103,6 @@ namespace Mortage_LP
             }
             dataGridVars.Items.Refresh();
             dataGridVars.UpdateLayout();
-            Console.WriteLine(solution.GetReport().ToString());
         }
 
         private void AddCntBtn_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -199,7 +204,7 @@ namespace Mortage_LP
             buttonCL_Click(null, null);
             dataGridVars.Items.Add( new Invester { Line = 0, Name = "Bank", MaxValue = "100", Interest = "0.15", SelectedValue = "" });
             dataGridVars.Items.Add( new Invester { Line = 1, Name = "Gov", MaxValue = "90", Interest = "0.08", SelectedValue = "" });
-            ParseContrain( "L0 - 2L1 >= 0");
+            ParseContrain( "2L0 - L1 >= 0");
         }
 
         private void Test2()
@@ -216,6 +221,21 @@ namespace Mortage_LP
             ParseContrain("L1 + 2L2 - L3 >= 0");
             ParseContrain("L2 - L3 >= 0");
         }
+        private void Test3()
+        {
+            buttonCL_Click(null, null);
+            dataGridVars.Items.Add(new Invester { Line = 0, Name = "Bank", MaxValue = "100", Interest = "0.15", SelectedValue = "" });
+            dataGridVars.Items.Add(new Invester { Line = 1, Name = "Gov", MaxValue = "90", Interest = "0.08", SelectedValue = "" });
+            dataGridVars.Items.Add(new Invester { Line = 2, Name = "Gov2", MaxValue = "50", Interest = "0.07", SelectedValue = "" });
+            ParseContrain("2L0 - L1 >= 0");
+            ParseContrain("2L0 - L1 - L2 >= 0");
+            ParseContrain("L0 + L1 + L2 <= "+Value.Text);
+            ParseContrain("L1 - L2 >= 0");
+            ParseContrain("L0  >= 1000000");
+            ParseContrain("L1  >= 1000000");
+            ParseContrain("L2  >= 1000000");
+
+        }
 
         private void buttonTest_Click(object sender, RoutedEventArgs e)
         {
@@ -227,6 +247,9 @@ namespace Mortage_LP
                     break;
                 case "buttonTest2":
                     Test2();
+                    break;
+                case "buttonTest3":
+                    Test3();
                     break;
 
                 default:
