@@ -1,10 +1,8 @@
 ﻿using Microsoft.SolverFoundation.Services;
-using Microsoft.SolverFoundation.Solvers;
 using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
-using System.Linq;
 
 namespace Mortage_LP
 {
